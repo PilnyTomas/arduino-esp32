@@ -32,23 +32,39 @@ namespace esp_i2s {
 #endif
 
 #ifndef PIN_I2S_FS
-  #if CONFIG_IDF_TARGET_ESP32S2
-    #define PIN_I2S_FS 27
+  #if (CONFIG_IDF_TARGET_ESP32S2 | CONFIG_IDF_TARGET_ESP32S3)
+    #define PIN_I2S_FS 15
   #else
     #define PIN_I2S_FS 25
   #endif
 #endif
 
 #ifndef PIN_I2S_SD
-  #define PIN_I2S_SD 26
+  #if CONFIG_IDF_TARGET_ESP32S3
+    #define PIN_I2S_SD 12
+  #elif CONFIG_IDF_TARGET_ESP32S2
+    #define PIN_I2S_SD 33
+  #else
+    #define PIN_I2S_SD 26
+  #endif
 #endif
 
 #ifndef PIN_I2S_SD_OUT
-  #define PIN_I2S_SD_OUT 26
+  #if CONFIG_IDF_TARGET_ESP32S3
+    #define PIN_I2S_SD_OUT 12
+  #elif CONFIG_IDF_TARGET_ESP32S2
+    #define PIN_I2S_SD_OUT 33
+  #else
+    #define PIN_I2S_SD_OUT 26
+  #endif
 #endif
 
 #ifndef PIN_I2S_SD_IN
-  #define PIN_I2S_SD_IN 35 // Pin 35 is only input!
+  #if CONFIG_IDF_TARGET_ESP32S2
+    #define PIN_I2S_SD_IN 21
+  #else
+    #define PIN_I2S_SD_IN 35 // Pin 35 is only input!
+  #endif
 #endif
 
 typedef enum {
