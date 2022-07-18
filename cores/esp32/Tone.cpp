@@ -31,11 +31,8 @@ static void tone_task(void*){
         log_d("Task received from queue TONE_START: _pin=%d, frequency=%u Hz, duration=%lu ms", tone_msg.pin, tone_msg.frequency, tone_msg.duration);
 
         log_d("Setup LED controll on channel %d", _channel);
-        // ledcSetup(_channel, tone_msg.frequency, 11);
-        // ledcAttachPin(tone_msg.pin, _channel);
-        // ledcWrite(_channel, 1024);
-        ledcWriteTone(_channel, tone_msg.frequency);
         ledcAttachPin(tone_msg.pin, _channel);
+        ledcWriteTone(_channel, tone_msg.frequency);
 
         if(tone_msg.duration){
           delay(tone_msg.duration);
@@ -95,6 +92,9 @@ void setToneChannel(uint8_t channel){
   if(tone_init()){
     tone_msg_t tone_msg = {
       .tone_cmd = TONE_SET_CHANNEL,
+      .pin = 0, // Ignored
+      .frequency = 0, // Ignored
+      .duration = 0, // Ignored
       .channel = channel
     };
     xQueueSend(_tone_queue, &tone_msg, portMAX_DELAY);
@@ -106,7 +106,10 @@ void noTone(uint8_t _pin){
   if(tone_init()){
     tone_msg_t tone_msg = {
       .tone_cmd = TONE_END,
-      .pin = _pin
+      .pin = _pin,
+      .frequency = 0, // Ignored
+      .duration = 0, // Ignored
+      .channel = 0 // Ignored
     };
     xQueueSend(_tone_queue, &tone_msg, portMAX_DELAY);
   }
@@ -124,7 +127,8 @@ void tone(uint8_t _pin, unsigned int frequency, unsigned long duration){
       .tone_cmd = TONE_START,
       .pin = _pin,
       .frequency = frequency,
-      .duration = duration
+      .duration = duration,
+      .channel = 0 // Ignored
     };
     xQueueSend(_tone_queue, &tone_msg, portMAX_DELAY);
   }
